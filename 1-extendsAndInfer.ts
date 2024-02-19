@@ -1,7 +1,7 @@
 // 数组类型
 // 数组类型提取第一个元素
 type First<T extends any[]> = T extends [infer F, ...unknown[]] ? F : never;
-let f: First<[1]>; //1
+let f: First<[1]>; // 1
 
 // 提取数组最后一个元素
 type Last<T extends any[]> = T extends [...unknown[], infer L] ? L : never;
