@@ -54,7 +54,51 @@ let dropSupStr: DropSubStr<`abbbc`, "b">;
 // AppendArgument 在已有的函数类型上添加一个参数
 type AppendArgument<F extends (...args: any[]) => any, NewArg> = F extends (
   ...args: infer A
-) => any
-  ? (...args: [...A, NewArg]) => any
+) => infer ReturnType
+  ? (...args: [...A, NewArg]) => ReturnType
   : never;
 let append: AppendArgument<(a: string) => void, number>;
+/**
+ * 索引类型的重新构造
+ */
+
+// UppercaseKey 把索引类型的 Key 变为大写。
+type UppercaseKey<Obj extends object> = {
+  [Key in keyof Obj as Uppercase<string & Key>]: Obj[Key];
+};
+type uppercase = UppercaseKey<{ aa: 1; bb: 2 }>;
+
+// ToReadonly 将索引类型内属性都变只读
+type ToReadonly<Obj extends object> = {
+  readonly [Key in keyof Obj]: Obj[Key];
+};
+type readonly = ToReadonly<{ aa: 1; bb: 2 }>;
+
+// ToPartial 将索引类型内属性都变可选
+type ToPartial<Obj extends object> = {
+  [Key in keyof Obj]?: Obj[Key];
+};
+type partial = ToPartial<{ aa: 1; bb: 2 }>;
+
+// ToMutable 所有只读属性变成可变属性
+type ToMutable<Obj extends object> = {
+  -readonly [Key in keyof Obj]: Obj[Key];
+};
+type mutable = ToMutable<{ readonly a: string }>;
+
+// ToRequired 去掉可选修饰符
+type ToRequired<Obj extends object> = {
+  [Key in keyof Obj]-?: Obj[Key];
+};
+type required = ToRequired<{ a?: string }>;
+
+// FilterByValueType 根据值的类型做过滤
+type FilterByValueType<Obj extends object, ValueType> = {
+  // never 的索引会在生成新的索引类型时被去掉
+  [Key in keyof Obj as Obj[Key] extends ValueType ? Key : never]: Obj[Key];
+};
+type filterVal = FilterByValueType<{ a: number; b: string }, string>;
+type filterVal2 = FilterByValueType<
+  { a: number; b: string; c: boolean },
+  string | number
+>;
