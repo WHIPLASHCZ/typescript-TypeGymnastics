@@ -75,3 +75,44 @@ type Divide2<
 
 let divide: Divide<6, 3>;
 let divide2: Divide2<12, 3>;
+
+// StrLen 字符串长度
+type StrLen<
+  Str extends string,
+  Counter extends any[] = []
+> = Str extends `${infer First}${infer Rest}`
+  ? StrLen<Rest, [...Counter, unknown]>
+  : Counter["length"];
+
+// GreaterThan 大于
+// 我们往一个数组类型中不断放入元素取长度，如果先到了 A，那就是 B 大，否则是 A 大：
+type GreaterThan<
+  Num1 extends number,
+  Num2 extends number,
+  CountArr extends unknown[] = []
+> = Num1 extends Num2
+  ? false
+  : CountArr["length"] extends Num1
+  ? false
+  : CountArr["length"] extends Num2
+  ? true
+  : GreaterThan<Num1, Num2, [...CountArr, unknown]>;
+let gtt: GreaterThan<7, 6>;
+
+// Fibonacci  [i1,i2,i1+i2]
+// 1、1、2、3、5、8、13、21、34
+type FibonacciLoop<
+  Num extends number,
+  FirstArr extends any[] = [1],
+  CurrentArr extends any[] = [],
+  CounterArr extends any[] = []
+> = CounterArr["length"] extends Num
+  ? CurrentArr["length"]
+  : FibonacciLoop<
+      Num,
+      CurrentArr,
+      [...FirstArr, ...CurrentArr],
+      [...CounterArr, unknown]
+    >;
+
+type Fibonacci<Num extends number> = FibonacciLoop<1>;
