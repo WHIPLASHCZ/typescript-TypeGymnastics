@@ -99,15 +99,35 @@ type GetRequired<T extends Record<PropertyKey, any>> = {
 };
 
 /**
- * RemoveIndexSignature
+ * RemoveIndexSignature 移除对象中的索引签名
  */
+// 索引类型可能有索引，也可能有可索引签名(例如：{[key:number]:any}，key就是一个索引签名)。
 type RemoveIndexSignature<Obj extends Record<string, any>> = {
   [Key in keyof Obj as Key extends `${infer Str}` ? Str : never]: Obj[Key];
 };
 
 /**
- * ClassPublicProps
+ * ClassPublicProps 获取类中所有public属性
  */
+// keyof只能迭代public的属性，private和protected的属性会被无视；
 type ClassPublicProps<Obj extends Record<string, any>> = {
   [Key in keyof Obj]: Obj[Key];
 };
+
+/**
+ * ParseQueryString 将queryString转换为对象
+ */
+// 添加字段
+type AddField<T extends Record<string, any>, key extends string, value> = {
+  [Key in keyof T | key]: Key extends keyof T ? T[Key] : value;
+};
+//将querystring转换为对象
+type ParseQueryString<
+  T extends string,
+  Result extends Record<string, string> = {}
+> = T extends `${infer A}=${infer B}&${infer Rest}`
+  ? ParseQueryString<Rest, AddField<Result, A, B>>
+  : T extends `${infer A}=${infer B}`
+  ? AddField<Result, A, B>
+  : never;
+type parseTest = ParseQueryString<"a=1&b=2&c=3&d=4">;
