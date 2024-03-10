@@ -131,3 +131,33 @@ type ParseQueryString<
   ? AddField<Result, A, B>
   : never;
 type parseTest = ParseQueryString<"a=1&b=2&c=3&d=4">;
+
+/**
+ * ParseQueryString 支持key重复但值不同 重复key中的不同值组成数组
+ */
+type MergeObj<
+  Obj1 extends Record<string, string>,
+  Obj2 extends Record<string, string>
+> = {
+  [key in keyof Obj1 | keyof Obj2]: key extends keyof Obj1
+    ? key extends keyof Obj2
+      ? MergeValues<Obj1[key], Obj2[key]>
+      : Obj1[key]
+    : key extends keyof Obj2
+    ? Obj2[key]
+    : never;
+};
+
+type MergeValues<One, Other> = One extends Other
+  ? One
+  : Other extends unknown[]
+  ? [One, ...Other]
+  : [One, Other];
+
+type MakeKV<T extends string> = T extends `${infer A}=${infer B}`
+  ? { [key in A]: B }
+  : {};
+type ParseQueryString2<T extends string> = T extends `${infer A}&${infer B}`
+  ? MergeObj<MakeKV<A>, ParseQueryString2<B>>
+  : MakeKV<T>;
+type parseTest2 = ParseQueryString2<"a=1&b=2&a=2">;
