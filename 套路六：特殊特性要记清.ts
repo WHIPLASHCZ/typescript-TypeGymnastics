@@ -161,3 +161,18 @@ type ParseQueryString2<T extends string> = T extends `${infer A}&${infer B}`
   ? MergeObj<MakeKV<A>, ParseQueryString2<B>>
   : MakeKV<T>;
 type parseTest2 = ParseQueryString2<"a=1&b=2&a=2">;
+
+interface Obj1 {
+  a: string;
+  b: number;
+}
+
+interface Obj2 {
+  b: boolean;
+  c: string[];
+}
+
+type keysUnion = keyof (Obj1 | Obj2); //结果为'b'
+
+// keyof Obj1 | keyof Obj2 结果为 "a" | "b" | "c"
+type keysIntersection = keyof Obj1 | keyof Obj2;
