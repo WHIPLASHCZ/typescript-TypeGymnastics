@@ -64,12 +64,14 @@ type GetParameters<T extends Function> = T extends (...args: infer P) => unknown
 let gp: GetParameters<(a: string | number) => void>;
 
 // GetReturnType 获取函数的返回值类型
-type GetReturnType<T extends Function> = T extends (
-  ...args: unknown[]
+// 参数这里只能用 any[] 而不能用 unknown[]：
+// 因为函数参数是逆变的，如果是 unknown[]，那当 Func 是这个函数的子类型，它的参数得是 unknown 的父类型，这显然是不可能的，所以这里只能用 any。
+type GetReturnType<Func extends Function> = Func extends (
+  ...args: any[]
 ) => infer R
   ? R
   : never;
-let gr: GetReturnType<() => string | number>;
+let gr: GetReturnType<(name: string) => string | number>;
 
 // 获取函数内的this的类型() GetThisParameterType
 class Dong {
@@ -140,3 +142,5 @@ let gpt: GetConstructorParameters<typeof PersonClass>; //[name:string]
 // GetRefProps 提取 ref 的值的类型
 type GetRefProps<T extends object> = T extends { ref: infer R } ? R : never;
 let grp: GetRefProps<{ ref: "1" }>;
+
+export {};

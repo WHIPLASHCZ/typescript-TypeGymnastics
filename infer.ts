@@ -6,3 +6,5 @@ type ObjWithVal2<T> = keyof T extends "value"
     : never
   : never;
 let v: ObjWithVal<{ value: "v" }>;
+
+export {};

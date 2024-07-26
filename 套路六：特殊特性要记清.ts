@@ -1,3 +1,4 @@
+import type { IsEqual2, NotEqual } from "./utils";
 /**
  * isAny 判断传入的泛型是否为any类型
  */
@@ -21,14 +22,6 @@ type NeverAndAny = never & any; //never
 type IsEqual<A, B> = (A extends B ? true : false) &
   (B extends A ? true : false);
 
-//   这样可以判断any；这是因为 TS 对这种形式的类型做了特殊处理，是一种 hack 的写法。
-type IsEqual2<A, B> = (<T>() => T extends A ? 1 : 2) extends <
-  T
->() => T extends B ? 1 : 2
-  ? true
-  : false;
-type NotEqual<A, B> = IsEqual2<A, B> extends true ? false : true;
-
 /**
  * IsUnion 判断联合类型
  */
@@ -46,7 +39,7 @@ type UnionArrExtend = [string] extends [string | number | boolean]
  * IsNever 判断泛型是否为never
  */
 // never 在条件类型中也比较特殊，如果条件类型左边是类型参数，并且传入的是 never，那么直接返回 never;
-// 所以，要判断 never 类型，就不能直接 T extends number，可以这样写：
+// 所以，要判断 never 类型，就不能直接 T extends never，可以这样写：
 type IsNever<T> = [T] extends [never] ? true : false;
 let isnever: IsNever<never>; //true
 

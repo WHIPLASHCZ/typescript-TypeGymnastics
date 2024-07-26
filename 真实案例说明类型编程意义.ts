@@ -8,3 +8,5 @@ declare function currying<Func>(
   ? CurriedFunc<Params, Result>
   : never;
 const curriedFunc = currying(func);
+
+export {};
