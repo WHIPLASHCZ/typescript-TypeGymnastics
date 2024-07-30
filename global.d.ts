@@ -1,18 +1,22 @@
+import type * as M from "./套路四：数组长度做计数";
 declare global {
   namespace Utils {
-    type UnionToIntersection<U> = (
+    export type UnionToIntersection<U> = (
       U extends U ? (x: U) => any : never
     ) extends (x: infer R) => any
       ? R
       : never;
-    type Copy<Obj extends Record<string, any>> = {
+    export type Copy<Obj extends Record<string, any>> = {
       [Key in keyof Obj]: Obj[Key];
     };
-    type IsEqual<A, B> = (<T>() => T extends A ? 1 : 2) extends <
+    export type IsEqual<A, B> = (<T>() => T extends A ? 1 : 2) extends <
       T
     >() => T extends B ? 1 : 2
       ? true
       : false;
+  }
+  namespace MathUtil {
+    export type * from "./套路四：数组长度做计数";
   }
 }
 

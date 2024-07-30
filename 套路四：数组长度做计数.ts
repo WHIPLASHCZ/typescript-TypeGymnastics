@@ -99,6 +99,15 @@ type GreaterThan<
   : GreaterThan<Num1, Num2, [...CountArr, unknown]>;
 let gtt: GreaterThan<7, 6>;
 
+type SmallerThan<Num1 extends number, Num2 extends number> = GreaterThan<
+  Num1,
+  Num2
+> extends true
+  ? false
+  : Utils.IsEqual<Num1, Num2> extends true
+  ? false
+  : true;
+
 // Fibonacci  [i1,i2,i1+i2]
 // 1、1、2、3、5、8、13、21、34
 type FibonacciLoop<
@@ -116,3 +125,5 @@ type FibonacciLoop<
     >;
 
 type Fibonacci<Num extends number> = FibonacciLoop<1>;
+
+export { GreaterThan, StrLen, Add, Subtract, Multiply, Divide, SmallerThan };
